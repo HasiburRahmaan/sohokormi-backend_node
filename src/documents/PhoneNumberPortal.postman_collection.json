@@ -1,0 +1,578 @@
+{
+	"info": {
+		"_postman_id": "55bd870a-e2b6-4566-aff3-7cf5896be5ed",
+		"name": "PhoneNumberPortal",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5047881"
+	},
+	"item": [
+		{
+			"name": "Institution",
+			"item": [
+				{
+					"name": "create institution",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"eiin\": \"1235\",\r\n    \"identifier\":\"002dw\",\r\n    \"name\": \"Demo Institution Tw0\",\r\n    \"phone\": \"019405506070\",\r\n    \"upazilaId\": \"300\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/institute/create",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"institute",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all institute",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/institute/all",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"institute",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get single institute info by user",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/institute/get/by/user?version=10",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"institute",
+								"get",
+								"by",
+								"user"
+							],
+							"query": [
+								{
+									"key": "version",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get if institute contains updated data or not",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/institute/get/if-institute-contains-new-data?version=1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"institute",
+								"get",
+								"if-institute-contains-new-data"
+							],
+							"query": [
+								{
+									"key": "version",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get 20 unused identifier",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/institute/get/unused-identifiers",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"institute",
+								"get",
+								"unused-identifiers"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "get all users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/user/all",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"user",
+								"all"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Districts",
+			"item": [
+				{
+					"name": "get all districts",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/districts",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"districts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all upazilla",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/upazilas",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"upazilas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all upazilla by upazila id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/upazila/id/10",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"upazila",
+								"id",
+								"10"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all upazilla by district id Copy",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/upazila/3",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"upazila",
+								"3"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Teacher",
+			"item": [
+				{
+					"name": "get all teacher list by token",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/teacher/all/by/institute",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"teacher",
+								"all",
+								"by",
+								"institute"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create teacher by super admin",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"phone\":\"01940506000\",\r\n    \"password\":\"123456\",\r\n    \"name\":\"Teacher One\",\r\n    \"role\":\"Teacher\",\r\n    \"instituteId\":1,\r\n    \"departmentId\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/teacher/create/by/super-admin",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"teacher",
+								"create",
+								"by",
+								"super-admin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create teacher by headmaster",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"phone\":\"01940506800\",\r\n    \"password\":\"123456\",\r\n    \"name\":\"Teacher Three\",\r\n    \"departmentId\": 5\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/teacher/create/by/headmaster",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"teacher",
+								"create",
+								"by",
+								"headmaster"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Department",
+			"item": [
+				{
+					"name": "get all department",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlN1cGVyQWRtaW4iLCJpYXQiOjE2NjkyNzY2NTZ9.akEJIhKRnzand3dcBSo5k6xCggtiLoBr7kgIjXd4uKQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/department/all",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"department",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create department",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlN1cGVyQWRtaW4iLCJpYXQiOjE2NjkyNzY2NTZ9.akEJIhKRnzand3dcBSo5k6xCggtiLoBr7kgIjXd4uKQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"department\":\"new department\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/department/create",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"department",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update department",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlN1cGVyQWRtaW4iLCJpYXQiOjE2NjkyNzY2NTZ9.akEJIhKRnzand3dcBSo5k6xCggtiLoBr7kgIjXd4uKQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"id\":\"1\",\r\n   \"department\":\"Bangla\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/department/update",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"department",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete department by id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlN1cGVyQWRtaW4iLCJpYXQiOjE2NjkyNzY2NTZ9.akEJIhKRnzand3dcBSo5k6xCggtiLoBr7kgIjXd4uKQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"id\":\"1\",\r\n   \"department\":\"Bangla\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/department/delete/14",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"department",
+								"delete",
+								"14"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "login",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlN1cGVyQWRtaW4iLCJpYXQiOjE2NjkyNzY2NTZ9.akEJIhKRnzand3dcBSo5k6xCggtiLoBr7kgIjXd4uKQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\":\"1234_01940506070\",\r\n    \"password\":\"123456\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/auth/login",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

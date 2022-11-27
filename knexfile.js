@@ -5,6 +5,8 @@
  */
 
 const { knexSnakeCaseMappers } = require("objection");
+
+require("dotenv").config();
 let migrationAndSeedLocation = {
   migrations: {
     directory: "./src/db/migrations",
@@ -18,10 +20,10 @@ const knex = {
   development: {
     client: "mysql2",
     connection: {
-      host: "localhost",
-      database: "phone_number_portal",
-      user: "root",
-      password: "root",
+      host: process.env.DB_HOST || "localhost",
+      database: process.env.DB_NAME || "phone_number_portal",
+      user: process.env.DB_USERNAME || "root",
+      password: process.env.DB_PASSWORD || "root",
     },
     migrations: {
       tableName: "knex_migrations",

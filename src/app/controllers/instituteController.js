@@ -1,4 +1,5 @@
 const _ = require("lodash");
+const { validator } = require("../../validators/validator");
 const Identifier = require("../models/identifier");
 const Institute = require("../models/institute");
 const Teacher = require("../models/teacher");
@@ -19,6 +20,33 @@ const createInstitute = async (req, res) => {
       "upazilaId",
       "identifier",
     ]);
+
+    let rules = {
+      eiin: { required: true },
+      name: { required: true },
+      phone: { required: true, type: "phone" },
+      upazilaId: { required: true },
+      identifier: { required: true },
+    };
+
+    let validationObj = validator(obj, rules);
+
+    if (Object.keys(validationObj).length) {
+      return res.status(403).send({ errors: validationObj });
+    }
+
+    let institutesWithEiinAndIdentifier = await Institute.query()
+      .where("eiin", obj.eiin)
+      .orWhere("identifier", obj.identifier);
+
+    if (institutesWithEiinAndIdentifier.length) {
+      return res.status(403).send({
+        errors: {
+          eiin: "Eiin or Identifier already exists",
+          identifier: "Eiin or Identifier already exists",
+        },
+      });
+    }
 
     let upazila = await getUpazilaByUpazilaIdFunction(obj.upazilaId);
 

@@ -6,9 +6,10 @@ const {
   checkIfInstituteContainsUpdatedData,
   getUnusedIdentifiers,
 } = require("../app/controllers/instituteController");
+const { SuperAdmin } = require("../app/middleware/auth");
 const router = express.Router();
 
-router.post("/create", createInstitute);
+router.post("/create", SuperAdmin, createInstitute);
 router.get("/all", getAllInstitutes);
 router.get("/get/by/user", getInstituteByUser);
 router.get(

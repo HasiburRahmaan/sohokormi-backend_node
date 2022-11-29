@@ -54,7 +54,7 @@ exports.up = function (knex) {
         table.timestamps(true, true, true);
       })
       .createTable("users", function (table) {
-        table.increments("id");
+        table.increments("id").unique();
         table.string("username", 50).notNullable().unique();
         table.string("password", 255).notNullable();
         table
@@ -66,7 +66,7 @@ exports.up = function (knex) {
         table.timestamps(true, true, true);
       })
       .createTable("teachers", function (table) {
-        table.integer("userId").unsigned().primary();
+        table.integer("userId").unsigned().primary().unique();
         table.integer("instituteId").unsigned().notNullable();
         table.string("phone", 14).notNullable();
         table.string("name", 255).notNullable();

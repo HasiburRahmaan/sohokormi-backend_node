@@ -5,3 +5,4 @@ package-lock.json
 .nyc
 .env
 .DS_Store
+test.js

@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "55bd870a-e2b6-4566-aff3-7cf5896be5ed",
+		"_postman_id": "bb2c3a68-f16f-43b7-89d1-e97c85ae5420",
 		"name": "PhoneNumberPortal",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "5047881"
+		"_exporter_id": "16401030"
 	},
 	"item": [
 		{
@@ -12,11 +12,21 @@
 				{
 					"name": "create institution",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"eiin\": \"1235\",\r\n    \"identifier\":\"002dw\",\r\n    \"name\": \"Demo Institution Tw0\",\r\n    \"phone\": \"019405506070\",\r\n    \"upazilaId\": \"300\"\r\n}",
+							"raw": "{\r\n    \"eiin\": \"1236\",\r\n    \"identifier\":\"002is\",\r\n    \"name\": \"Demo Institution Tw0\",\r\n    \"phone\": \"01940550607\",\r\n    \"upazilaId\": \"300\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -39,6 +49,16 @@
 				{
 					"name": "get all institute",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -299,7 +319,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"phone\":\"01940506000\",\r\n    \"password\":\"123456\",\r\n    \"name\":\"Teacher One\",\r\n    \"role\":\"Teacher\",\r\n    \"instituteId\":1,\r\n    \"departmentId\": 1\r\n}",
+							"raw": "{\r\n    \"phone\":\"01940506001\",\r\n    \"password\":\"123456\",\r\n    \"name\":\"Teacher One\",\r\n    \"role\":\"Headmaster\",\r\n    \"role2\":\"Teacher\",\r\n    \"role3\":\"Headmaster\",\r\n    \"instituteId\":1,\r\n    \"departmentId\": 1\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -338,7 +358,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"phone\":\"01940506800\",\r\n    \"password\":\"123456\",\r\n    \"name\":\"Teacher Three\",\r\n    \"departmentId\": 5\r\n}",
+							"raw": "{\r\n    \"phone\":\"01940506801\",\r\n    \"password\":\"123456\",\r\n    \"name\":\"Teacher Three\",\r\n    \"departmentId\": 5\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -524,7 +544,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"username\":\"1234_01940506070\",\r\n    \"password\":\"123456\"\r\n}",
+					"raw": "{\r\n    \"username1\":\"admin\",\r\n    \"username2\":\"1235_01940506001\",\r\n    \"username\":\"1235_01940506001\",\r\n    \"password\":\"123456\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"

@@ -50,4 +50,4 @@ const knex = {
   },
 };
 
-module.exports = knex.development;
+module.exports = knex.production;

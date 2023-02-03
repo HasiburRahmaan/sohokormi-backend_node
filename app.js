@@ -6,6 +6,10 @@ const app = new express();
 app.use(cors());
 app.use(express.json());
 
+app.get('/', ({ res }) => {
+  res.send('D campus Phone Book');
+});
+
 require("./src/db/dbConfig.js")();
 require("./src/startup/router.js")(app);
 

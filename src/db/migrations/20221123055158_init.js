@@ -108,14 +108,12 @@ exports.up = function (knex) {
  */
 exports.down = function (knex) {
   return knex.schema
-    .dropTable("identifiers")
-    .dropTable("schoolTeacherCreateLogs")
-    .dropTable("schoolTeacherDeleteLogs")
-    .dropTable("teachers")
-    .dropTable("users")
-    .dropTable("institutes")
-    .dropTable("upazilas")
-    .dropTable("roles")
-    .dropTable("departments")
-    .dropTable("districts");
+    .dropTableIfExists("identifiers")
+    .dropTableIfExists("teachers")
+    .dropTableIfExists("departments")
+    .dropTableIfExists("institutes")
+    .dropTableIfExists("upazilas")
+    .dropTableIfExists("districts")
+    .dropTableIfExists("users")
+    .dropTableIfExists("roles");
 };

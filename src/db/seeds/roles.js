@@ -16,7 +16,7 @@ exports.seed = async function (knex) {
   await knex("users").insert([
     {
       username: "admin",
-      password: await bcrypt.hash("123456", process.env.BCRYPT_SALT),
+      password: await bcrypt.hash("123456", process.env.BCRYPT_SALT_SOHOKORMI),
       role: "SuperAdmin",
     },
   ]);

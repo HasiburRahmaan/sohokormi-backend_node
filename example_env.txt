@@ -1,7 +1,17 @@
-JWT_PRIVATE_KEY=1PCTSEggVgWwXBV12cJcEfyGQcXNR7xP164uQWZaynnDOcqjsFK7WrwBAAkbzlyiJCuJRDeKMuatB
-BCRYPT_SALT=$2b$10$qj0jypUGWIH0LVNEOYulK
+JWT_PRIVATE_KEY=1PCTSEggVgWwXBV12cJcEfyGQcXNR7xP164uQWZaynnDOcqjsFK7WrwBAAkbzlyiJCuJRDeKMuatBD
+BCRYPT_SALT_SOHOKORMI=$2b$10$qj0jypUGWIH0LVNEOYulKe
 
-DB_HOST=localhost
-DB_NAME=phone_number_portal
-DB_USERNAME=root
-DB_PASSWORD=root
+PORT=5000
+
+# two mode: development, production
+PRODUCTION_MODE=development
+
+# DB_HOST_PRODUCTION=techstone.cs1m9kp6mt8l.ap-south-1.rds.amazonaws.com
+# DB_NAME_PRODUCTION=teacher_phone_portal
+# DB_USERNAME_PRODUCTION=phone_portal_user
+# DB_PASSWORD_PRODUCTION=TechStone2022
+
+DB_HOST_DEV=localhost
+DB_NAME_DEV=phone_number_portal
+DB_USERNAME_DEV=root
+DB_PASSWORD_DEV=root

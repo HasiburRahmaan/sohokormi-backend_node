@@ -142,24 +142,7 @@ const createTeacherByHeadmaster = async (req, res) => {
   }
 };
 
-const getAllTeacherByInstitute = async (req, res) => {
-  try {
-    let user = req.user;
-    if (user?.instituteId) {
-      let data = await Teacher.query()
-        .where({ instituteId: user.instituteId })
-        .select("userId", "name", "phone", "department", "instituteId");
-      return res.send(data);
-    }
-    return res.send([]);
-  } catch (error) {
-    console.log("error====>", error);
-    return res.status(500).send(error);
-  }
-};
-
 module.exports = {
   createTeacherBySuperAdmin,
   createTeacherByHeadmaster,
-  getAllTeacherByInstitute,
 };

@@ -20,10 +20,10 @@ const knex = {
   development: {
     client: "mysql2",
     connection: {
-      host: process.env.DB_HOST || "localhost",
-      database: process.env.DB_NAME || "phone_number_portal",
-      user: process.env.DB_USERNAME || "root",
-      password: process.env.DB_PASSWORD || "root",
+      host: process.env.DB_HOST_DEV,
+      database: process.env.DB_NAME_DEV,
+      user: process.env.DB_USERNAME_DEV,
+      password: process.env.DB_PASSWORD_DEV,
     },
     migrations: {
       tableName: "knex_migrations",
@@ -50,4 +50,4 @@ const knex = {
   },
 };
 
-module.exports = knex.production;
+module.exports = knex.development;

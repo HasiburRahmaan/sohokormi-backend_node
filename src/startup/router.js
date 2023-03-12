@@ -1,4 +1,3 @@
-const TeacherRoute = require("../routes/teacherRoute");
 const DistrictUpazilaRoute = require("../routes/districtUpazilaRoute");
 const LogRoute = require("../routes/logRoute");
 

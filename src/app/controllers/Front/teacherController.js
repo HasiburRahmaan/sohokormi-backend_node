@@ -135,6 +135,7 @@ class TeacherController {
         .send({ message: ["Institute or Teachers info not found"] });
     } catch (error) {
       console.log(error);
+      return res.status(500).send(error);
     }
   };
 

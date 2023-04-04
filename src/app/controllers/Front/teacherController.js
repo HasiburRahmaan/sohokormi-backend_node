@@ -7,6 +7,7 @@ const Teacher = require("../../models/teacher.js");
 const User = require("../../models/user.js");
 const { UNPROCCESSABLE_DATA } = require("../../../utils/statusCode.js");
 const generatePassword = require("../../../utils/generatePassword.js");
+const DeletedUser = require("../../models/deletedUser.js");
 
 class TeacherController {
   static getAllTeacherByIdentifier = async (req, res) => {
@@ -14,8 +15,22 @@ class TeacherController {
       let instituteId = req?.institute?.id;
       if (instituteId) {
         let data = await Teacher.query()
+          .leftJoin("users", "users.id", "teachers.userId")
+          .leftJoin("roles", "roles.id", "users.roleId")
+          .leftJoin("departments", "departments.id", "teachers.departmentId")
+          .leftJoin("designations", "designations.id", "teachers.designationId")
           .where({ instituteId, isDeleted: false })
-          .select("userId", "name", "phone", "department", "instituteId");
+          .select(
+            "userId",
+            "name",
+            "phone",
+            "role",
+            "departmentId",
+            "departments.department",
+            "designationId",
+            "designations.designation",
+            "instituteId"
+          );
         return res.send(data);
       }
       return res.send([]);
@@ -26,6 +41,7 @@ class TeacherController {
   };
 
   static createTeacherByHeadmaster = async (req, res) => {
+    let users = [];
     try {
       let adminUser = req?.user;
       let institute = await Institute.query()
@@ -38,14 +54,18 @@ class TeacherController {
       if (institute && teacherArrayFromRequest?.length) {
         let teachers = [];
         let teacherValidations = [];
-        let users = [];
         let departments = new Set();
 
         for (let i = 0; i < teacherArrayFromRequest.length; i++) {
           let teacher = teacherArrayFromRequest[i];
 
           teachers.push({
-            ..._.pick(teacher, ["phone", "name", "departmentId"]),
+            ..._.pick(teacher, [
+              "phone",
+              "name",
+              "departmentId",
+              "designationId",
+            ]),
             instituteId: institute.id,
             createdBy: adminUser.id,
           });
@@ -66,7 +86,7 @@ class TeacherController {
           users.push({
             username: `${institute.identifier}_${teacher.phone}`,
             password: await generatePassword(teacher.phone),
-            role: "Teacher",
+            roleId: 3,
           });
 
           departments.add(teacher.departmentId);
@@ -122,7 +142,6 @@ class TeacherController {
           return {
             ...teacher,
             userId: userArrayObj[teacher.phone],
-            department: departmentObj[teacher.departmentId],
           };
         });
         let teacherArray = await Teacher.query().insertGraph(teachers);
@@ -146,12 +165,14 @@ class TeacherController {
         "name",
         "phone",
         "departmentId",
+        "designationId",
         "isDeleted",
       ]);
 
       let validation = await validator(obj, {
         userId: { required: true, exists: "userId, teachers" },
         departmentId: { required: true, exists: "id, departments" },
+        designationId: { required: true, exists: "id, designations" },
         phone: { required: true, type: "phone" },
         isDeleted: { type: "boolean" },
         name: { required: true },
@@ -163,7 +184,6 @@ class TeacherController {
         });
       }
 
-      let department = validation.dbObj?.departmentId;
       let institute = await Institute.query().findById(
         validation.dbObj.userId.instituteId
       );
@@ -197,11 +217,63 @@ class TeacherController {
         });
       }
 
-      let teacherObj = { ...obj, department: department.department };
+      let teacherObj = {
+        ...obj,
+        department: validation.dbObj.departmentId.department,
+        designation: validation.dbObj.designationId.designation,
+      };
+      let userObj = { username: `${institute.identifier}_${obj.phone}` };
 
       await Teacher.query().where({ userId: obj.userId }).update(obj);
+      await User.query().where({ id: obj.userId }).update(userObj);
+      return res.send(teacherObj);
+    } catch (error) {
+      console.log(error);
+      return res.status(500).send(error);
+    }
+  };
 
-      return res.send({ teacherObj });
+  static deleteUsersByHeadmaster = async (req, res) => {
+    try {
+      let users = req?.body?.users;
+      let reason = req?.body?.reason;
+
+      if (users.length) {
+        let adminUser = req?.user;
+        let institute = await Institute.query()
+          .join("teachers", "teachers.instituteId", "institutes.id")
+          .join("users", "users.id", "teachers.userId")
+          .findOne({
+            "teachers.userId": adminUser.id,
+            "teachers.isDeleted": 0,
+          });
+
+        let teachers = await Teacher.query()
+          .join("users", "users.id", "teachers.userId")
+          .join("roles", "roles.id", "users.roleId")
+          .where({ "teachers.instituteId": institute.id })
+          .whereNot("users.roleId", 2)
+          .whereIn("teachers.userId", users);
+
+        let usersEligableForDelete = teachers.map((e) => e.userId);
+
+        let teachersData = teachers.map((teacher) => ({
+          deletedBy: adminUser.id,
+          instituteId: teacher.instituteId,
+          phone: teacher.phone,
+          name: teacher.name,
+          reason: reason,
+          departmentId: teacher.departmentId,
+          designationId: teacher.designationId,
+        }));
+
+        await DeletedUser.query().insertGraph(teachersData);
+        await Teacher.query()
+          .whereIn("userId", usersEligableForDelete)
+          .delete();
+        await User.query().whereIn("id", usersEligableForDelete).delete();
+      }
+      return res.status(200).send("deleted");
     } catch (error) {
       console.log(error);
       return res.status(500).send(error);

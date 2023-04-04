@@ -4,16 +4,6 @@
  */
 exports.up = function (knex) {
   return knex.schema
-
-    .dropTableIfExists("identifiers")
-    .dropTableIfExists("departments")
-    .dropTableIfExists("institutes")
-    .dropTableIfExists("upazilas")
-    .dropTableIfExists("districts")
-
-    .dropTableIfExists("users")
-    .dropTableIfExists("roles")
-    .dropTableIfExists("teachers")
     .createTable("identifiers", function (table) {
       table.string("identifier", 5).primary();
       table.boolean("isUsed").defaultTo(false);
@@ -27,6 +17,11 @@ exports.up = function (knex) {
     .createTable("departments", function (table) {
       table.increments("id");
       table.string("department", 255).unique();
+      table.timestamps(true, true, true);
+    })
+    .createTable("designations", function (table) {
+      table.increments("id");
+      table.string("designation", 255).unique();
       table.timestamps(true, true, true);
     })
     .createTable("districts", function (table) {
@@ -57,11 +52,9 @@ exports.up = function (knex) {
       table.increments("id").unique();
       table.string("username", 50).notNullable().unique();
       table.string("password", 255).notNullable();
-      table
-        .string("role", 255)
-        .notNullable()
-        .references("role")
-        .inTable("roles");
+      table.integer("roleId").unsigned().notNullable();
+      table.foreign("roleId").references("id").inTable("roles");
+
       table.boolean("isActive").defaultTo(true);
       table.timestamps(true, true, true);
     })
@@ -70,8 +63,8 @@ exports.up = function (knex) {
       table.integer("instituteId").unsigned().notNullable();
       table.string("phone", 14).notNullable();
       table.string("name", 255).notNullable();
-      table.string("department", 255).nullable();
       table.integer("departmentId", 255).unsigned().nullable();
+      table.integer("designationId", 255).unsigned().nullable();
       table.integer("createdBy").unsigned();
       table.boolean("isDeleted").defaultTo(false);
 
@@ -80,6 +73,7 @@ exports.up = function (knex) {
       table.foreign("createdBy").references("id").inTable("users");
       table.foreign("instituteId").references("id").inTable("institutes");
       table.foreign("departmentId").references("id").inTable("departments");
+      table.foreign("designationId").references("id").inTable("designations");
 
       table.timestamps(true, true, true);
     })
@@ -99,6 +93,23 @@ exports.up = function (knex) {
       table.foreign("userId").references("id").inTable("users");
       table.foreign("instituteId").references("id").inTable("institutes");
       table.timestamps(true, true, true);
+    })
+    .createTable("deletedTeachers", function (table) {
+      table.increments("id");
+      table.integer("deletedBy").unsigned();
+
+      table.integer("instituteId").unsigned().notNullable();
+      table.string("phone", 14).notNullable();
+      table.string("name", 255).notNullable();
+      table.string("reason", 255).nullable();
+      table.integer("departmentId", 255).unsigned().nullable();
+      table.integer("designationId", 255).unsigned().nullable();
+
+      table.foreign("departmentId").references("id").inTable("departments");
+      table.foreign("designationId").references("id").inTable("designations");
+      table.foreign("instituteId").references("id").inTable("institutes");
+
+      table.timestamps(true, true, true);
     });
 };
 
@@ -107,13 +118,18 @@ exports.up = function (knex) {
  * @returns { Promise<void> }
  */
 exports.down = function (knex) {
-  return knex.schema
-    .dropTableIfExists("identifiers")
-    .dropTableIfExists("teachers")
-    .dropTableIfExists("departments")
-    .dropTableIfExists("institutes")
-    .dropTableIfExists("upazilas")
-    .dropTableIfExists("districts")
-    .dropTableIfExists("users")
-    .dropTableIfExists("roles");
+  // return knex.schema
+  //   .dropTableIfExists("identifiers")
+  //   .dropTableIfExists("teachers")
+  //   .dropTableIfExists("departments")
+  //   .dropTableIfExists("institutes")
+  //   .dropTableIfExists("upazilas")
+  //   .dropTableIfExists("districts")
+  //   .dropTableIfExists("users")
+  //   .dropTableIfExists("roles");
+  return knex
+    .raw("DROP DATABASE IF EXISTS phone_number_portal;")
+    .then(() => knex.raw("CREATE DATABASE phone_number_portal;"))
+    .then(() => console.log("Database recreated"))
+    .catch((err) => console.log(err));
 };

@@ -8,3 +8,4 @@ module.exports = function (app) {
 
 route.post("/create/teacher", TeacherController.createTeacherByHeadmaster);
 route.post("/update/teacher", TeacherController.updateUserByHeadmaster);
+route.post("/delete/teacher", TeacherController.deleteUsersByHeadmaster);

@@ -26,8 +26,26 @@ class InstituteController {
 
         if (!version || version != institute.version) {
           let teachers = await Teacher.query()
-            .where({ instituteId: institute.id })
-            .select("userId", "name", "phone", "department");
+            .leftJoin("users", "users.id", "teachers.userId")
+            .leftJoin("roles", "roles.id", "users.roleId")
+            .leftJoin("departments", "departments.id", "teachers.departmentId")
+            .leftJoin(
+              "designations",
+              "designations.id",
+              "teachers.designationId"
+            )
+            .where({ instituteId: institute.id, isDeleted: false })
+            .select(
+              "userId",
+              "name",
+              "phone",
+              "role",
+              "departmentId",
+              "departments.department",
+              "designationId",
+              "designations.designation",
+              "instituteId"
+            );
 
           institute.teachers = teachers;
 

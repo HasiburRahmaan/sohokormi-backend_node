@@ -8,16 +8,16 @@ exports.seed = async function (knex) {
   // Deletes ALL existing entries
   // await knex("roles").del();
   await knex("roles").insert([
-    { role: "SuperAdmin" },
-    { role: "Headmaster" },
-    { role: "Teacher" },
+    { id: 1, role: "SuperAdmin" },
+    { id: 2, role: "Headmaster" },
+    { id: 3, role: "Teacher" },
   ]);
 
   await knex("users").insert([
     {
       username: "admin",
       password: await bcrypt.hash("123456", process.env.BCRYPT_SALT_SOHOKORMI),
-      role: "SuperAdmin",
+      roleId: "1",
     },
   ]);
 };

@@ -1,4 +1,5 @@
 const DepartmentController = require("../../app/controllers/SuperAdmin/departmentController.js");
+const DesignationController = require("../../app/controllers/SuperAdmin/designationController.js");
 
 let expres = require("express");
 const { auth, SuperAdmin } = require("../../app/middleware/auth.js");
@@ -14,7 +15,15 @@ module.exports = function (app) {
 route.get("/department/get/all", DepartmentController.getAllDepartment);
 route.post("/department/create", DepartmentController.createDepartment);
 route.put("/department/update", DepartmentController.updateDepartment);
-route.put("/department/delete/:id", DepartmentController.deleteDepartment);
+route.delete("/department/delete/:id", DepartmentController.deleteDepartment);
+
+route.get("/designation/get/all", DesignationController.getAllDesignation);
+route.post("/designation/create", DesignationController.createDesignation);
+route.put("/designation/update", DesignationController.updateDesignation);
+route.delete(
+  "/designation/delete/:id",
+  DesignationController.deleteDesignation
+);
 
 route.get("/institute/get/all", InstituteController.getAllInstitutes);
 route.post("/institute/create", InstituteController.createInstitute);

@@ -10,7 +10,7 @@ const generateAuthToken = (user) => {
   const token = jwt.sign(
     {
       id: user?.id,
-      role: user?.role,
+      roleId: user?.roleId,
       ...(user?.instituteId && { instituteId: user.instituteId }),
     },
     secret
@@ -40,7 +40,7 @@ const login = async (req, res) => {
         return res.status(401).send("Id Disabled");
       }
 
-      if (user.role == ("Headmaster" || "Teacher")) {
+      if (user.roleId == (3 || 2)) {
         let teacher = await Teacher.query().findOne({ userId: user.id });
 
         if (teacher) {

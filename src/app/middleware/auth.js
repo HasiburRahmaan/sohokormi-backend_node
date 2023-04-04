@@ -36,7 +36,7 @@ const SuperAdmin = async (req, res, next) => {
     }
 
     let user = await User.query().findById(decoded.id);
-    if (user?.role != "SuperAdmin") {
+    if (user?.roleId != 1) {
       return res.status(401).send("unauthorized");
     }
 
@@ -60,7 +60,7 @@ const HeadmasterAuth = async (req, res, next) => {
     }
 
     let user = await User.query().findById(decoded.id);
-    if (user?.role != "Headmaster") {
+    if (user?.roleId != 2) {
       return res.status(401).send("unauthorized");
     }
 

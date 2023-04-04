@@ -15,15 +15,50 @@ class TeacherController {
       let identifier = req?.headers?.identifier;
 
       if (identifier) {
-        let institute = await Institute.query().findOne({ identifier });
+        let institute = await Institute.query()
+          .leftJoin("upazilas", "upazilas.id", "institutes.upazilaId")
+          .leftJoin("districts", "districts.id", "upazilas.districtId")
+          .findOne({ identifier })
+          .select(
+            "institutes.id as id",
+            "eiin",
+            "identifier",
+            "name",
+            "phone",
+            "upazilaId",
+            "upazilas.upazila",
+            "districtId",
+            "districts.district",
+            "version",
+            "isActive"
+          );
         if (institute?.id) {
           let data = await Teacher.query()
+            .leftJoin("users", "users.id", "teachers.userId")
+            .leftJoin("roles", "roles.id", "users.roleId")
+            .leftJoin("departments", "teachers.departmentId", "departments.id")
+            .leftJoin(
+              "designations",
+              "teachers.designationId",
+              "designations.id"
+            )
             .where({ instituteId: institute.id })
-            .select("userId", "name", "phone", "department", "instituteId");
-          return res.send(data);
+            .select(
+              "userId",
+              "name",
+              "phone",
+              "users.roleId",
+              "roles.role",
+              "department",
+              "departmentId",
+              "designation",
+              "designationId",
+              "instituteId"
+            );
+          return res.send({ institute, teachers: data });
         }
       }
-      return res.send([]);
+      return res.status(404).send("no data found");
     } catch (error) {
       console.log("error====>", error);
       return res.status(500).send(error);
@@ -31,6 +66,9 @@ class TeacherController {
   };
 
   static createTeacherBySuperAdmin = async (req, res) => {
+    let users = [];
+    let teachers = [];
+
     try {
       let instituteId = req?.body?.instituteId;
       let teacherArrayFromRequest = req?.body?.teachers;
@@ -42,16 +80,19 @@ class TeacherController {
         });
 
         if (institute) {
-          let teachers = [];
           let teacherValidations = [];
-          let users = [];
           let departments = new Set();
 
           for (let i = 0; i < teacherArrayFromRequest.length; i++) {
             let teacher = teacherArrayFromRequest[i];
 
             teachers.push({
-              ..._.pick(teacher, ["phone", "name", "departmentId"]),
+              ..._.pick(teacher, [
+                "phone",
+                "name",
+                "departmentId",
+                "designationId",
+              ]),
               instituteId: institute.id,
               createdBy: req.user.id,
             });
@@ -72,7 +113,7 @@ class TeacherController {
             users.push({
               username: `${institute.identifier}_${teacher.phone}`,
               password: await generatePassword(teacher.phone),
-              role: "Teacher",
+              roleId: 3,
             });
 
             departments.add(teacher.departmentId);
@@ -88,10 +129,6 @@ class TeacherController {
           let departmentFromDatabases = await Department.query().whereIn("id", [
             ...departments,
           ]);
-          let departmentObj = {};
-          departmentFromDatabases.map((department) => {
-            departmentObj[department.id] = department.department;
-          });
 
           if (departmentFromDatabases.length != departments.size) {
             return res
@@ -128,7 +165,6 @@ class TeacherController {
             return {
               ...teacher,
               userId: userArrayObj[teacher.phone],
-              department: departmentObj[teacher.departmentId],
             };
           });
           let teacherArray = await Teacher.query().insertGraph(teachers);
@@ -146,24 +182,34 @@ class TeacherController {
         .send({ message: ["Teacher info not found"] });
     } catch (error) {
       console.log(error);
+
+      /* Deleting Newly created Users if any error occured */
+      await User.query()
+        .whereIn(
+          "id",
+          users.filter((e) => (e.id ? true : false)).map((e) => e.id)
+        )
+        .delete();
       return res.status(500).send(error);
     }
   };
 
   static createHeadmasterBySuperAdmin = async (req, res) => {
+    let user = null;
     try {
       let obj = _.pick(req.body, [
         "instituteId",
         "name",
         "phone",
         "departmentId",
+        "designationId",
       ]);
 
       /* Check if this institute already has any headmaster */
       let headmaster = await Teacher.query()
         .join("users", "users.id", "teachers.userId")
         .where({
-          "users.role": "Headmaster",
+          "users.roleId": 2,
           "teachers.instituteId": obj.instituteId,
         });
 
@@ -187,7 +233,6 @@ class TeacherController {
         });
       }
 
-      let department = validation.dbObj?.departmentId;
       let institute = validation.dbObj?.instituteId;
 
       /* check if phone number already exists for this institution */
@@ -202,21 +247,22 @@ class TeacherController {
         });
       }
 
-      let user = await User.query().insert({
+      user = await User.query().insert({
         username: `${institute.identifier}_${obj.phone}`,
         password: await generatePassword(obj.phone),
-        role: "Headmaster",
+        roleId: 2,
       });
-
       let teacher = await Teacher.query().insert({
         ...obj,
         userId: user.id,
-        department: department.department,
       });
 
       return res.send({ teacher });
     } catch (error) {
       console.log(error);
+      if (user && user.id) {
+        await User.query().where({ id: user.id }).delete();
+      }
       return res.status(500).send(error);
     }
   };
@@ -228,12 +274,14 @@ class TeacherController {
         "name",
         "phone",
         "departmentId",
+        "designationId",
         "isDeleted",
       ]);
 
       let validation = await validator(obj, {
         userId: { required: true, exists: "userId, teachers" },
         departmentId: { required: true, exists: "id, departments" },
+        designationId: { required: true, exists: "id, designations" },
         phone: { required: true, type: "phone" },
         isDeleted: { type: "boolean" },
         name: { required: true },
@@ -271,8 +319,10 @@ class TeacherController {
       }
 
       let teacherObj = { ...obj, department: department.department };
+      let userObj = { username: `${institute.identifier}_${obj.phone}` };
 
       await Teacher.query().where({ userId: obj.userId }).update(obj);
+      await User.query().where({ id: obj.userId }).update(userObj);
 
       return res.send({ teacherObj });
     } catch (error) {

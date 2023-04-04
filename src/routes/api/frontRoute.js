@@ -1,6 +1,7 @@
 let expres = require("express");
 const {
   getAllDepartment,
+  getAllDesignation,
 } = require("../../app/controllers/Front/departmentController.js");
 
 const InstituteController = require("../../app/controllers/Front/instituteController.js");
@@ -15,6 +16,7 @@ module.exports = function (app) {
 };
 
 route.get("/department/get/all", getAllDepartment);
+route.get("/designation/get/all", getAllDesignation);
 
 route.get("/institute/get/by/user", InstituteController.getInstituteByUser);
 route.get(

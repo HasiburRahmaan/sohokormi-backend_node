@@ -20,7 +20,12 @@ class InstituteController {
         name: { required: true },
         phone: { required: true, type: "phone" },
         upazilaId: { required: true, exists: "id, upazilas" },
-        identifier: { required: true, unique: "identifier, institutes" },
+        identifier: {
+          required: true,
+          maxLen: 5,
+          minLen: 5,
+          unique: "identifier, institutes",
+        },
       };
 
       let validation = await validator(obj, rules);
@@ -43,7 +48,23 @@ class InstituteController {
   };
   static getAllInstitutes = async (req, res) => {
     try {
-      let data = await Institute.query();
+      let data = await Institute.query()
+        .join("upazilas", "upazilas.id", "institutes.upazilaId")
+        .join("districts", "districts.id", "upazilas.districtId")
+        .select(
+          "institutes.id",
+          "upazilas.upazila",
+          "districts.district",
+          "districts.id as districtId",
+          "upazilaId",
+          "name",
+          "eiin",
+          "identifier",
+          "phone",
+          "version",
+          "isActive",
+          "institutes.createdAt"
+        );
       return res.send(data);
     } catch (error) {
       console.log("error====>", error);
